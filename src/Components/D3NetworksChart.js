@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { nodes, links } from '../data';
+// import { nodes, links } from '../data';
+import data from "../data.json"
 
 const NetworkChart = () => {
     const chartRef = useRef();
@@ -12,8 +13,8 @@ const NetworkChart = () => {
         }
         // Create a D3 force simulation
         const simulation = d3
-            .forceSimulation(nodes)
-            .force('link', d3.forceLink(links).id(d => d.id))
+            .forceSimulation(data.entities)
+            .force('link', d3.forceLink(data.connections).id(d => d.id))
             .force('charge', d3.forceManyBody().strength(-100))
             .force('center', d3.forceCenter(300, 300));
 
@@ -23,7 +24,7 @@ const NetworkChart = () => {
         // Create links with arrowheads
         const link = svg
             .selectAll('.link')
-            .data(links)
+            .data(data.connections)
             .enter()
             .append('line')
             .attr('class', 'link')
@@ -32,7 +33,7 @@ const NetworkChart = () => {
         // Create nodes
         const node = svg
             .selectAll('.node')
-            .data(nodes)
+            .data(data.entities)
             .enter()
             .append('circle')
             .attr('class', 'node')
@@ -42,7 +43,7 @@ const NetworkChart = () => {
         // Add labels to nodes, positioned to the right
         const label = svg
             .selectAll('.label')
-            .data(nodes)
+            .data(data.entities)
             .enter()
             .append('text')
             .attr('class', 'label')
@@ -61,19 +62,19 @@ const NetworkChart = () => {
             // Update positions of the remaining links and labels
             link
                 .attr('x1', d => {
-                    const sourceNode = nodes.find(node => node.name === d.Start);
+                    const sourceNode = data.entities.find(node => node.name === d.Start);
                     return sourceNode ? sourceNode.x : 0;
                 })
                 .attr('y1', d => {
-                    const sourceNode = nodes.find(node => node.name === d.Start);
+                    const sourceNode = data.entities.find(node => node.name === d.Start);
                     return sourceNode ? sourceNode.y : 0;
                 })
                 .attr('x2', d => {
-                    const targetNode = nodes.find(node => node.name === d.End);
+                    const targetNode = data.entities.find(node => node.name === d.End);
                     return targetNode ? targetNode.x : 0;
                 })
                 .attr('y2', d => {
-                    const targetNode = nodes.find(node => node.name === d.End);
+                    const targetNode = data.entities.find(node => node.name === d.End);
                     return targetNode ? targetNode.y : 0;
                 });
 
